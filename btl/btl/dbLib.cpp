@@ -13,4 +13,11 @@
 
 /* TODO: You can implement methods, functions that support your data structures here.
  * */
-#include<iostream>
+
+void LoadData(void*&)
+{
+}
+
+void ReleaseData(void*&)
+{
+}

@@ -70,18 +70,156 @@ public:
 
     void    reverse();
 
-    void    traverse(void (*op)(T&)) {
+    void    traverse(void (*op)(T&)) 
+	{
         // TODO: Your code goes here
+		
     }
-    void    traverse(void (*op)(T&, void*), void* pParam) {
+    void    traverse(void (*op)(T&, void*), void* pParam)
+	{
         // TODO: Your code goes here
+		op(pHead->data, pParam);
     }
 };
+
+template<class T>
+inline L1List<T>::~L1List()
+{
+	this->clean();
+}
+
+template<class T>
+inline void L1List<T>::clean()
+{
+	L1Item<T>* del = _pHead;
+	while (_pHead != NULL) 
+	{
+		del = _pHead;
+		_pHead = _pHead->pNext;
+		recycle(del);
+		_size--;
+	}
+}
+
+template<class T>
+inline T& L1List<T>::at(int i)
+{
+	int count = 0;
+	L1Item<T>* walk = _pHead;
+
+	while ( walk!=NULL) 
+	{
+		if (count == i) 
+		{
+			return walk;
+		}
+		count++;
+		walk = walk->pNext;
+	}
+	
+	// TODO: insert return statement here
+	asset(o);
+}
+
+template<class T>
+inline T& L1List<T>::operator[](int i)
+{
+	int count = 0;
+	L1Item<T>* walk = _pHead;
+
+	while (walk != NULL)
+	{
+		if (count == i)
+		{
+			return walk;
+		}
+		count++;
+		walk = walk->pNext;
+	}
+	asset(0);
+	// TODO: insert return statement here
+}
+
+template<class T>
+inline bool L1List<T>::find(T& a, int& idx)
+{
+	L1Item<T>* walk = _pHead;
+	int count = 0;
+	while (walk != NULL) 
+	{
+		if (walk->data != a)
+		{
+			count++;
+			walk = walk->pNext;
+		}
+		else 
+		{
+			idx = count;
+			return true;
+		}
+	}
+	idx = -1;
+	return false;
+}
+
+template<class T>
+inline int L1List<T>::insert(int i, T& a)
+{
+	if (i > _size)return -1;
+	L1Item<T>* New = new L1Item<T>(a);
+	if (_size == 0) 
+	{
+		New->pNext = _pHead;
+		_pHead = New;
+		return 0;
+	}
+	L1Item<T>* temp = _pHead;
+	int count = 0;
+	while (count != i)
+	{
+		temp = temp->pNext;
+		count++;
+	}
+	New->pNext = temp->pNext;
+	temp->pNext = New;
+	_size++;
+	return 0;
+}
+
+template<class T>
+inline int L1List<T>::remove(int i)
+{
+	if (i > _size)return false;
+	L1Item<T>* temp = _pHead;
+	L1Item<T>* pre;
+	int count = 0;
+	while (count != i)
+	{
+		pre = temp;
+		temp = temp->pNext;
+		count++;
+	}
+	if (temp == _pHead) 
+	{
+		_pHead = _pHead->pNext;
+	}
+	else if (temp->pNext == NULL && temp != NULL) 
+	{
+		pre->pNext = NULL;
+	}
+	else pre->pNext = temp->pNext;
+	recycle(temp);
+	_size--;
+	return 0;
+}
 
 /// Insert item to the end of the list
 /// Return 0 if success, -1 otherwise
 template <class T>
-int L1List<T>::push_back(T &a) {
+int L1List<T>::push_back(T &a) 
+{
+	L1Item<T>* New = new L1Item<T>(a);
+	this->at(_size - 1)->pNext = New;
     // TODO: Your code goes here
     return 0;
 }
@@ -91,6 +229,9 @@ int L1List<T>::push_back(T &a) {
 template <class T>
 int L1List<T>::insertHead(T &a) {
     // TODO: Your code goes here
+	L1Item<T>* New = new L1Item<T>(a);
+	New->pNext = _pHead;
+	_pHead = New;
     return 0;
 }
 
@@ -99,6 +240,10 @@ int L1List<T>::insertHead(T &a) {
 template <class T>
 int L1List<T>::removeHead() {
     // TODO: Your code goes here
+	L1Item<T>* del = _pHead;
+	_pHead = _pHead->pNext;
+	recycle(del);
+	_size--;
     return -1;
 }
 
@@ -107,7 +252,29 @@ int L1List<T>::removeHead() {
 template <class T>
 int L1List<T>::removeLast() {
     // TODO: Your code goes here
+	this->at(_size - 2)->pNext = NULL;
+	recycle(this->at(_size - 1));
     return -1;
+}
+
+template<class T>
+inline void L1List<T>::reverse()
+{
+	L1Item<T>* current = _pHead;
+	L1Item<T>* prev = NULL, * next = NULL;
+
+	while (current != NULL) {
+		// Store next 
+		next = current->pNext;
+
+		// Reverse current node's pointer 
+		current->pNext = prev;
+
+		// Move pointers one position ahead. 
+		prev = current;
+		current = next;
+	}
+	_pHead = prev;
 }
 
 #endif //DSA191_A1_DSALIB_H
